@@ -1,0 +1,14 @@
+#!/bin/bash
+#ls ./amino_acid_sequences/
+
+for transdecoder_result in ./amino_acid_sequences/*.pep; 
+do 
+	echo $transdecoder_result
+	# Getting species codes
+	export species_code=`echo "$transdecoder_result" | awk -F'/' '{print $3}' |  awk -F'_' '{print $1}'`
+	echo $species_code
+	
+	# Adding species code to gene name
+	sed -i 's/>/>'$species_code'_/g' $transdecoder_result
+	
+done

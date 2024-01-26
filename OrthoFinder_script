@@ -1,0 +1,23 @@
+#!/bin/bash
+ 
+#First command line option is the number of cores for diamond (8 for me)
+#Second command line option is the number of cores for OrthoFinder itself (2 for me)
+ 
+#Cleaning things up
+rm -r -f ./OrthoFinder/amino_acid_sequences
+
+#Moving AA translations to OrthoFinder directory
+cp -r ./amino_acid_sequences ./OrthoFinder/amino_acid_sequences
+
+./OrthoFinder/orthofinder -f ./OrthoFinder/amino_acid_sequences -M msa -t $1 -a $2
+
+#Installing HOG campatible version of OrthoFinder
+wget https://github.com/davidemms/OrthoFinder/releases/download/2.5.5/OrthoFinder_source.tar.gz
+tar -xzvf OrthoFinder_source.tar.gz
+chmod u+rwx OrthoFinder_source/tools/create_files_for_hogs.py
+export resultsDate="$(date +'%b%d')"
+OrthoFinder_source/tools/create_files_for_hogs.py ./OrthoFinder/amino_acid_sequences/OrthoFinder/Results_$resultsDate/  ./OrthoFinder/amino_acid_sequences/OrthoFinder/Results_$resultsDate/ N1
+
+#Let's me know when the script is done
+printf '\7'
+echo OrthoFinder Done

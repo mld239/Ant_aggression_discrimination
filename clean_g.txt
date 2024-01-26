@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# (1) First command line option should be genomes
+
+# Copying files to new directory for cleaned genomes
+#cp -r $1 genomes_cleaned
+
+# Directing specifically to fna files in the genomes_cleaned directory
+ls ./genomes_cleaned/*.fna
+
+for raw_genome_file in ./genomes_cleaned/*.fna; 
+do 
+	# Replacing commas
+	sed -i 's/,/_/g' $raw_genome_file
+
+	# Replacing dashes
+	sed -i 's/-/_/g' $raw_genome_file
+
+	# Replacing open parenthesis
+	sed -i 's/(/_/g' $raw_genome_file
+
+	# Replacing closed parenthesis
+	sed -i 's/)/_/g' $raw_genome_file
+	
+	# Getting species codes
+	export species_code=`echo "$raw_genome_file" | awk -F'/' '{print $3}' |  awk -F'_' '{print $1}'`
+	
+	# Adding species code to gene name
+	sed -i 's/>/>'$species_code'_/g' $raw_genome_file
+	
+	# Cleaning up failed attempts
+	#sed -i 's/{species_code}_{species_code}_//g' $raw_genome_file
+	
+done
+
+
+
+
+
+
+
+

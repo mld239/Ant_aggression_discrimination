@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+# Making new directory for alignment results
+#mkdir aligned_HOG
+
+# Making new directory for tree inferences
+#mkdir Tree_Inferences
+
+
+for orthogroup_seq in ./OrthoFinder/amino_acid_sequences/OrthoFinder/Results_Sep23/Orthogroup_Sequences/*.fa;
+do
+	#echo $orthogroup_seq
+	export orthoNumber=`echo "$orthogroup_seq" | awk -F'/' '{print $7}' | awk -F'.' '{print $1}'`
+	echo $orthoNumber
+	if test -f "./Tree_Inferences/$orthoNumber.tree"; 
+	then
+		echo "Already exists."
+	else
+		# Running the alignment
+		/home/mld02/miniconda3/bin/mafft --localpair --maxiterate 1000 --anysymbol $orthogroup_seq > ./aligned_HOG/$orthoNumber.fa
+		# Running inferences
+		FastTree < ./aligned_HOG/$orthoNumber.fa > ./Tree_Inferences/$orthoNumber.tree
+	fi
+done
+
+# Using for do done to perform on each file
+# Using the if-then-else-fi statement to have it run only on files that haven't been done yet

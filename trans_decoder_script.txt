@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# First command line option should be TransDecoder-TransDecoder-v5.7.0
+
+# Directing specifically to fna files in the genomes_cleaned directory
+ls ./genomes_cleaned/*.fna
+
+# Making directory for nucleotide sequence results
+mkdir nucleotide_sequences
+cd ./nucleotide_sequences
+mkdir pep_files
+
+for cleaned_genome in ../genomes_cleaned/*.fna;
+do
+	echo $cleaned_genome
+	../$1/TransDecoder.LongOrfs -t $cleaned_genome
+	../$1/TransDecoder.Predict -t $cleaned_genome --single_best_only
+	cp *.pep ./pep_files/
+done
+
+
+

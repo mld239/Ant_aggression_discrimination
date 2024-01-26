@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#Making outputs directory
+mkdir ./HyPhy_outputs
+
+#Discrimination Analysis
+for tree in `ls -rS ./HyPhy_inputs/Labeled_Trees/*_Disc.tree`
+do
+	echo $tree
+	export treeCode=`echo "$tree" | awk -F'/' '{print $4}' | awk -F'_' '{print $1}'`
+	#echo $tree_code
+	if test -s "./HyPhy_outputs/"$treeCode"_Disc.json"; 
+	then
+		echo "Already exists."
+	else
+		echo "Still needs to run"
+		/usr/local/bin/hyphy ./hyphy-analyses/BUSTED-PH/BUSTED-PH.bf --alignment ./HyPhy_inputs/OG_alignments_cleaned/$treeCode"_aligned.fa" --tree ./HyPhy_inputs/Labeled_Trees/$treeCode"_Disc.tree" --srv Yes --branches Foreground --output ./HyPhy_outputs/$treeCode"_Disc_BUSTED.json"
+		/usr/local/bin/hyphy relax --alignment ./HyPhy_inputs/OG_alignments_cleaned/$treeCode"_aligned.fa" --tree ./HyPhy_inputs/Labeled_Trees/$treeCode"_Disc.tree" --test Foreground --srv Yes --output "./HyPhy_outputs/"$treeCode"_Disc_relax.json"
+	fi
+done
+
+#Aggression Analysis
+for tree in `ls -rS ./HyPhy_inputs/Labeled_Trees/*_Aggr.tree`
+do
+	#echo $tree
+	export treeCode=`echo "$tree" | awk -F'/' '{print $4}' | awk -F'_' '{print $1}'`
+	#echo $tree_code
+	if test -s "./HyPhy_outputs/"$treeCode"_Aggr.json"; 
+	then
+		echo "Already exists."
+	else
+		echo "Still needs to run"
+		/usr/local/bin/hyphy ./hyphy-analyses/BUSTED-PH/BUSTED-PH.bf --alignment ./HyPhy_inputs/OG_alignments_cleaned/$treeCode"_aligned.fa" --tree ./HyPhy_inputs/Labeled_Trees/$treeCode"_Aggr.tree" --srv Yes --branches Foreground --output ./HyPhy_outputs/$treeCode"_Aggr.json"
+		/usr/local/bin/hyphy relax --alignment ./HyPhy_inputs/OG_alignments_cleaned/$treeCode"_aligned.fa" --tree ./HyPhy_inputs/Labeled_Trees/$treeCode"_Aggr.tree" --test Foreground --srv Yes --output "./HyPhy_outputs/"$treeCode"_Aggr_relax.json"
+	fi
+done
+
+
+
+
